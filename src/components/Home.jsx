@@ -70,6 +70,11 @@ export default function Home() {
 
     const activeItemData = activeId ? items.find(i => i.id === activeId) : null;
 
+    // Safety check
+    if (!markets || markets.length < 2) {
+        return <div style={{ padding: 20 }}>Carregando mercados... (Reset a configuração se persistir)</div>;
+    }
+
     return (
         <DndContext
             sensors={sensors}

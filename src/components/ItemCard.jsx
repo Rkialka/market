@@ -14,8 +14,16 @@ export default function ItemCard({ item, onClick }) {
     const { markets, addItemToCart, getItemQuantity } = useApp();
 
     // Get live quantities
-    const qty1 = getItemQuantity(markets[0].id, item.id);
-    const qty2 = getItemQuantity(markets[1].id, item.id);
+    // Get live quantities
+    if (!markets || markets.length < 2) return null; // Safety check
+
+    // Safety for potential missing ids
+    const m1Id = markets[0]?.id;
+    const m2Id = markets[1]?.id;
+    if (!m1Id || !m2Id) return null;
+
+    const qty1 = getItemQuantity(m1Id, item.id);
+    const qty2 = getItemQuantity(m2Id, item.id);
 
     // ... swipe logic ...
 
@@ -25,6 +33,31 @@ export default function ItemCard({ item, onClick }) {
         setShowMenu(false);
         // Dispatch custom event for Toast
         window.dispatchEvent(new CustomEvent('item-added', { detail: { marketName: markets.find(m => m.id === marketId).name } }));
+    };
+
+    // Swipe Logic
+    const [showQuickActions, setShowQuickActions] = useState(false);
+    const [touchStart, setTouchStart] = useState(null);
+    const [touchEnd, setTouchEnd] = useState(null);
+
+    const minSwipeDistance = 50;
+
+    const onTouchStart = (e) => {
+        setTouchEnd(null);
+        setTouchStart(e.targetTouches[0].clientX);
+    };
+
+    const onTouchMove = (e) => setTouchEnd(e.targetTouches[0].clientX);
+
+    const onTouchEnd = () => {
+        if (!touchStart || !touchEnd) return;
+        const distance = touchStart - touchEnd;
+        const isLeftSwipe = distance > minSwipeDistance;
+        const isRightSwipe = distance < -minSwipeDistance;
+
+        if (isLeftSwipe || isRightSwipe) {
+            setShowQuickActions(true);
+        }
     };
 
     const style = {
