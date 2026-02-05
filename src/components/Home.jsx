@@ -99,7 +99,7 @@ export default function Home() {
                         padding: '12px 20px 8px 20px',
                         background: 'var(--surface-color)'
                     }}>
-                        <h1 style={{ fontSize: '18px' }}>Minha Lista</h1>
+                        <h1 style={{ fontSize: '18px' }}>A Batalha dos Mercados</h1>
                         <button className="btn-icon" onClick={() => navigate('MARKET_CONFIG')}>
                             <Settings size={20} />
                         </button>
